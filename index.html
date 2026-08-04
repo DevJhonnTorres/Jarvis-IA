@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jhonn Torres — Web3 Developer</title>
+<meta name="description" content="Web3 developer building CaliCoins, blockchain payments for events in Cali. Solidity, smart contracts, crypto.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+<style>
+:root {
+  --paper: oklch(99% 0 0);
+  --paper-2: oklch(95% 0.003 220);
+  --ink: oklch(12% 0 0);
+  --ink-2: oklch(32% 0.003 220);
+  --ink-3: oklch(50% 0.003 220);
+  --rule: oklch(88% 0.003 220);
+  --accent: oklch(42% 0.10 225);
+  --accent-2: oklch(36% 0.08 225);
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter Tight', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+[data-lang="es"] .lang-en { display: none!important; }
+[data-lang="en"] .lang-es { display: none!important; }
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--paper);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--paper)}
+
+.lang-toggle{position:fixed;top:0.75rem;right:1.25rem;z-index:300;display:flex;gap:0}
+.lang-toggle button{background:none;border:none;padding:0.3rem 0.6rem;cursor:pointer;color:var(--ink-3);font-family:var(--font-mono);font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;transition:all 0.2s}
+.lang-toggle button.active{color:var(--ink)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0.75rem 1.25rem;background:var(--paper);border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;transition:transform 0.3s}
+nav .handle{font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-3);text-decoration:none;letter-spacing:0.02em}
+nav .handle span{color:var(--accent)}
+
+.hero{min-height:90vh;display:flex;align-items:center;padding-top:4rem;overflow:hidden;position:relative}
+.hero-inner{max-width:1100px;margin:0 auto;padding:0 1.25rem;width:100%;position:relative;z-index:2;display:flex;align-items:center;gap:3rem}
+.hero-left{flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:1.25rem}
+.hero .tag{font-family:var(--font-mono);font-size:0.55rem;color:var(--ink-3);letter-spacing:0.12em;text-transform:uppercase}
+.hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:300;line-height:1.1;letter-spacing:-0.02em;font-family:var(--font-mono);min-height:1.3em}
+.hero h1 strong{font-weight:700;color:var(--accent)}
+.hero .terminal-cursor{display:inline-block;width:2px;height:1em;background:var(--accent);margin-left:2px;animation:blink .7s infinite;vertical-align:text-bottom}
+.hero .prompt{font-family:var(--font-mono);font-size:0.5rem;color:var(--accent);letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.15rem}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.hero .subhead{font-size:clamp(0.85rem,1.3vw,0.95rem);color:var(--ink-2);max-width:480px;line-height:1.7;margin-bottom:0;font-weight:300}
+.hero .cta-row{display:flex;gap:0.5rem;flex-wrap:wrap}
+.hero .cta-row a{text-decoration:none;padding:0.4rem 0.9rem;border:1px solid var(--rule);font-size:0.6rem;color:var(--ink-2);transition:all 0.2s;text-transform:uppercase;letter-spacing:0.06em;font-family:var(--font-mono)}
+.hero .cta-row a:hover{border-color:var(--ink);color:var(--ink)}
+.hero .cta-row a.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.hero .cta-row a.primary:hover{background:var(--accent);border-color:var(--accent)}
+.hero-avatar{display:flex;gap:1rem;align-items:center}
+.hero-avatar img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:1px solid var(--rule);filter:grayscale(0.15);flex-shrink:0}
+.hero .avatar-handle{font-family:var(--font-mono);font-size:0.55rem;color:var(--ink-3);letter-spacing:0.08em}
+.hero .avatar-handle span{color:var(--accent)}
+@media(max-width:768px){.hero{min-height:auto;padding:5rem 0 2rem}.hero-left{align-items:flex-start;text-align:left;width:100%}.hero .subhead{max-width:none;font-size:0.85rem}.hero .cta-row{justify-content:flex-start}.hero h1{font-size:clamp(1.5rem,8vw,2.2rem)}.hero-avatar img{width:45px;height:45px}}
+@media(max-width:480px){.hero .subhead{font-size:0.8rem}.hero h1{font-size:1.3rem}}
+
+.tech-strip{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);overflow:hidden;padding:0.6rem 0}
+.tech-track{display:flex;gap:1.5rem;animation:scroll 25s linear infinite;width:max-content;padding:0 1rem}
+.tech-track:hover{animation-play-state:paused}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tech-item{display:flex;align-items:center;gap:0.3rem;white-space:nowrap;opacity:0.5;transition:opacity 0.2s}
+.tech-item:hover{opacity:1}
+.tech-item i{font-size:1rem}
+.tech-item span{font-family:var(--font-mono);font-size:0.5rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.05em}
+
+.container{max-width:680px;margin:0 auto;padding:0 1.25rem}
+section{padding:4rem 0}
+.section-label{font-family:var(--font-mono);font-size:0.5rem;letter-spacing:0.15em;color:var(--ink-3);margin-bottom:0.15rem;text-transform:uppercase}
+.section-title{font-size:1.1rem;font-weight:400;margin-bottom:2rem;font-family:var(--font-display);font-style:italic;color:var(--ink-2)}
+
+.stats{display:flex;gap:2.5rem;margin-bottom:2rem}
+.stat-item .num{font-size:1.3rem;font-weight:600;color:var(--ink);font-family:var(--font-mono)}
+.stat-item .lbl{font-size:0.55rem;color:var(--ink-3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.06em;margin-top:0.1rem}
+@media(max-width:640px){.stats{gap:1.5rem;flex-wrap:wrap}}
+
+.exp-item{padding:1rem 0;border-bottom:1px solid var(--rule)}
+.exp-header{width:100%;display:flex;justify-content:space-between;align-items:flex-start;background:none;border:none;cursor:pointer;color:var(--ink);font-family:var(--font-body);font-size:0.85rem;text-align:left;transition:color 0.2s;gap:0.75rem;padding:0}
+.exp-header:hover .role{color:var(--accent)}
+.exp-header .title-group{flex:1}
+.exp-header .role{font-weight:500;font-size:0.85rem;transition:color 0.2s}
+.exp-header .company{font-size:0.7rem;color:var(--ink-2);margin-top:0.1rem}
+.exp-header .meta{display:flex;align-items:center;gap:0.5rem;flex-shrink:0}
+.exp-header .date{font-family:var(--font-mono);font-size:0.55rem;color:var(--ink-3)}
+.exp-header .toggle{font-size:0.9rem;color:var(--ink-3);transition:transform 0.3s;font-family:var(--font-mono)}
+.exp-item.open .exp-header .toggle{transform:rotate(45deg)}
+.exp-body{max-height:0;overflow:hidden;transition:max-height 0.35s ease;padding:0}
+.exp-item.open .exp-body{max-height:420px;padding:0.5rem 0 0.75rem}
+.exp-body p{font-size:0.78rem;color:var(--ink-2);line-height:1.7;margin-bottom:0.5rem;font-weight:300}
+.exp-body .tags{display:flex;flex-wrap:wrap;gap:0.25rem}
+.exp-body .tags span{font-family:var(--font-mono);font-size:0.5rem;padding:0.1rem 0.35rem;background:var(--paper-2);border:1px solid var(--rule);color:var(--ink-2)}
+
+hr{border:none;border-top:1px solid var(--rule);margin:2rem 0}
+
+.skills{display:flex;gap:1.5rem;flex-wrap:wrap}
+.skill-cat{flex:1;min-width:150px}
+.skill-cat h4{font-size:0.55rem;font-weight:600;margin-bottom:0.5rem;color:var(--ink);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.08em}
+.skill-cat .tags{display:flex;flex-wrap:wrap;gap:0.2rem}
+.skill-cat .tags span{font-family:var(--font-mono);font-size:0.5rem;padding:0.1rem 0.3rem;border:1px solid var(--rule);color:var(--ink-2)}
+
+.contact{display:flex;gap:0.5rem;flex-wrap:wrap}
+.contact a{text-decoration:none;color:var(--ink-2);border:1px solid var(--rule);padding:0.4rem 0.75rem;font-size:0.65rem;transition:all 0.2s;font-family:var(--font-mono);display:flex;align-items:center;gap:0.35rem}
+.contact a:hover{border-color:var(--ink);color:var(--ink)}
+.contact .label{color:var(--accent);font-weight:500;margin-right:0.15rem}
+.contact .plain{border:1px solid var(--rule);padding:0.4rem 0.75rem;font-size:0.65rem;font-family:var(--font-mono);color:var(--ink-2)}
+
+footer{border-top:1px solid var(--rule);padding:2rem 0;text-align:center;font-size:0.55rem;color:var(--ink-3);font-family:var(--font-mono)}
+</style>
+</head>
+<body>
+
+<div class="lang-toggle">
+  <button data-lang="en" class="active">EN</button>
+  <button data-lang="es">ES</button>
+</div>
+
+<nav>
+  <a href="#" class="handle"><span>@</span>jhonntorres</a>
+</nav>
+
+<div class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-avatar">
+        <img src="https://ui-avatars.com/api/?name=Jhonn+Torres&background=1a1a2e&color=ffffff&bold=true&size=120" alt="Jhonn Torres">
+        <span class="avatar-handle"><span>@</span>jhonntorres</span>
+      </div>
+      <div class="tag lang-en">Web3 Developer · Blockchain</div>
+      <div class="tag lang-es">Desarrollador Web3 · Blockchain</div>
+      <h1><span class="prompt">$ ./whoami</span><span id="terminal-name"><span class="lang-en">Jhonn <strong>Torres</strong></span><span class="lang-es">Jhonn <strong>Torres</strong></span><span class="terminal-cursor"></span></span></h1>
+      <p class="subhead lang-en">Building blockchain payments for real life. I built CaliCoins, a Web3 app for crypto payments at events, in collaboration with the Cali Mayor's Office.</p>
+      <p class="subhead lang-es">Construyendo pagos blockchain para la vida real. Desarrollé CaliCoins, una app Web3 de pagos en criptomonedas para eventos, en colaboración con la Alcaldía de Santiago de Cali.</p>
+      <div class="cta-row">
+        <a href="#exp" class="primary"><span class="lang-en">Projects</span><span class="lang-es">Proyectos</span></a>
+        <a href="mailto:torres.castro.alex@gmail.com">Email</a>
+        <a href="tel:+573054184380">Phone</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tech-strip">
+  <div class="tech-track">
+    <div class="tech-item"><i class="devicon-solidity-plain"></i><span>Solidity</span></div>
+    <div class="tech-item"><i class="devicon-javascript-plain"></i><span>JavaScript</span></div>
+    <div class="tech-item"><i class="devicon-nodejs-plain"></i><span>Node.js</span></div>
+    <div class="tech-item"><i class="devicon-react-original"></i><span>React</span></div>
+    <div class="tech-item"><i class="devicon-nextjs-original"></i><span>Next.js</span></div>
+    <div class="tech-item"><i class="devicon-python-plain"></i><span>Python</span></div>
+    <div class="tech-item"><i class="devicon-typescript-plain"></i><span>TypeScript</span></div>
+    <div class="tech-item"><i class="devicon-postgresql-plain"></i><span>PostgreSQL</span></div>
+    <div class="tech-item"><i class="devicon-git-plain"></i><span>Git</span></div>
+    <div class="tech-item"><i class="devicon-linux-plain"></i><span>Linux</span></div>
+    <div class="tech-item"><span style="font-family:var(--font-mono);font-size:0.5rem;text-transform:uppercase">Smart Contracts</span></div>
+    <div class="tech-item"><span style="font-family:var(--font-mono);font-size:0.5rem;text-transform:uppercase">Crypto Wallets</span></div>
+    <div class="tech-item"><span style="font-family:var(--font-mono);font-size:0.5rem;text-transform:uppercase">Blockchain</span></div>
+    <div class="tech-item"><i class="devicon-solidity-plain"></i><span>Solidity</span></div>
+    <div class="tech-item"><i class="devicon-javascript-plain"></i><span>JavaScript</span></div>
+    <div class="tech-item"><i class="devicon-nodejs-plain"></i><span>Node.js</span></div>
+    <div class="tech-item"><i class="devicon-react-original"></i><span>React</span></div>
+    <div class="tech-item"><i class="devicon-nextjs-original"></i><span>Next.js</span></div>
+    <div class="tech-item"><i class="devicon-python-plain"></i><span>Python</span></div>
+    <div class="tech-item"><i class="devicon-typescript-plain"></i><span>TypeScript</span></div>
+    <div class="tech-item"><i class="devicon-postgresql-plain"></i><span>PostgreSQL</span></div>
+    <div class="tech-item"><i class="devicon-git-plain"></i><span>Git</span></div>
+    <div class="tech-item"><i class="devicon-linux-plain"></i><span>Linux</span></div>
+    <div class="tech-item"><span style="font-family:var(--font-mono);font-size:0.5rem;text-transform:uppercase">Smart Contracts</span></div>
+    <div class="tech-item"><span style="font-family:var(--font-mono);font-size:0.5rem;text-transform:uppercase">Crypto Wallets</span></div>
+    <div class="tech-item"><span style="font-family:var(--font-mono);font-size:0.5rem;text-transform:uppercase">Blockchain</span></div>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="stats">
+      <div class="stat-item"><div class="num">2</div><div class="lbl lang-en">Projects</div><div class="lbl lang-es">Proyectos</div></div>
+      <div class="stat-item"><div class="num">1</div><div class="lbl lang-en">Web3 App</div><div class="lbl lang-es">App Web3</div></div>
+      <div class="stat-item"><div class="num">2</div><div class="lbl lang-en">SENA&nbsp;Degrees</div><div class="lbl lang-es">Títulos SENA</div></div>
+      <div class="stat-item"><div class="num">∞</div><div class="lbl lang-en">Curiosity</div><div class="lbl lang-es">Curiosidad</div></div>
+    </div>
+  </div>
+</section>
+
+<hr style="margin:0">
+
+<section id="exp">
+  <div class="container">
+    <div class="section-label">01</div>
+    <h2 class="section-title lang-en">Projects</h2>
+    <h2 class="section-title lang-es">Proyectos</h2>
+
+    <div class="exp-item open">
+      <button class="exp-header">
+        <div class="title-group"><div class="role lang-en">Web3 Developer — CaliCoins</div><div class="role lang-es">Desarrollador Web3 — CaliCoins</div><div class="company lang-en">Cali Mayor's Office collaboration</div><div class="company lang-es">Colaboración con la Alcaldía de Cali</div></div>
+        <div class="meta"><span class="date">Web3</span><span class="toggle">+</span></div>
+      </button>
+      <div class="exp-body">
+        <p class="lang-en">Built CaliCoins, a Web3 app that enables crypto payments as a reward for event attendance. Developed in collaboration with the Mayor's Office of Santiago de Cali to push decentralized tech into the local economy.</p>
+        <p class="lang-es">Desarrollé CaliCoins, una app Web3 que permite el envío de criptomonedas como medio de pago por asistencia a eventos. Proyecto desarrollado en colaboración con la Alcaldía de Santiago de Cali para impulsar la adopción de tecnologías descentralizadas en la economía local.</p>
+        <div class="tags"><span>Smart Contracts</span><span>Blockchain</span><span>Wallets</span><span>Cryptopayments</span><span>Solidity</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <button class="exp-header">
+        <div class="title-group"><div class="role lang-en">Software Developer — SIRETA</div><div class="role lang-es">Desarrollador de Software — SIRETA</div><div class="company lang-en">Cost calculation for treatment plants</div><div class="company lang-es">Cálculo de costos en plantas de tratamiento</div></div>
+        <div class="meta"><span class="date">Software</span><span class="toggle">+</span></div>
+      </button>
+      <div class="exp-body">
+        <p class="lang-en">Developed SIRETA, specialized software for calculating production costs at a wastewater treatment plant in Cali. It automates cost and resource calculations, with real-time analysis to optimize operational expenses.</p>
+        <p class="lang-es">Desarrollé SIRETA, un software especializado en el cálculo de costos de producción en una planta de tratamiento de aguas negras en Cali. Automatiza el cálculo de costos y recursos, con análisis en tiempo real para optimizar los gastos operativos.</p>
+        <div class="tags"><span>Data Analysis</span><span>Process Optimization</span><span>Energy Efficiency</span><span>UI</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr style="margin:0">
+
+<section>
+  <div class="container">
+    <div class="section-label">02</div>
+    <h2 class="section-title lang-en">Education</h2>
+    <h2 class="section-title lang-es">Educación</h2>
+
+    <div class="exp-item open">
+      <button class="exp-header">
+        <div class="title-group"><div class="role lang-en">Systems Engineering</div><div class="role lang-es">Ingeniería de Sistemas</div><div class="company">Univ. Santiago de Cali</div></div>
+        <div class="meta"><span class="date">2023 – now</span><span class="toggle">+</span></div>
+      </button>
+      <div class="exp-body"><p class="lang-en">First semester student, building the theoretical foundation for software and blockchain engineering.</p><p class="lang-es">Estudiante de primer semestre, construyendo la base teórica para la ingeniería de software y blockchain.</p></div>
+    </div>
+
+    <div class="exp-item">
+      <button class="exp-header">
+        <div class="title-group"><div class="role lang-en">Electronics Technician · A/V Maintenance Technician</div><div class="role lang-es">Técnico en Electrónica · Técnico en Mantenimiento de Audio y Video</div><div class="company">SENA</div></div>
+        <div class="meta"><span class="date">2021 – 2023</span><span class="toggle">+</span></div>
+      </button>
+      <div class="exp-body"><p class="lang-en">Two technical degrees in electronics and audio/video equipment maintenance — hardware discipline that complements software work.</p><p class="lang-es">Dos títulos técnicos en electrónica y mantenimiento de equipos de audio y video — disciplina de hardware que complementa el trabajo de software.</p></div>
+    </div>
+
+    <div class="exp-item">
+      <button class="exp-header">
+        <div class="title-group"><div class="role lang-en">High School</div><div class="role lang-es">Bachillerato</div><div class="company">Colegio Comfandi El Prado</div></div>
+        <div class="meta"><span class="date">2018 – 2023</span><span class="toggle">+</span></div>
+      </button>
+      <div class="exp-body"><p class="lang-en">Graduated high school in Cali.</p><p class="lang-es">Graduado de bachillerato en Cali.</p></div>
+    </div>
+  </div>
+</section>
+
+<hr style="margin:0">
+
+<section>
+  <div class="container">
+    <div class="section-label">03</div>
+    <h2 class="section-title lang-en">Skills</h2>
+    <h2 class="section-title lang-es">Habilidades</h2>
+
+    <div class="skills">
+      <div class="skill-cat">
+        <h4 class="lang-en">Blockchain &amp; Web3</h4><h4 class="lang-es">Blockchain y Web3</h4>
+        <div class="tags"><span>Smart Contracts</span><span>Solidity</span><span>Wallets</span><span>Cryptopayments</span></div>
+      </div>
+      <div class="skill-cat">
+        <h4 class="lang-en">Development</h4><h4 class="lang-es">Desarrollo</h4>
+        <div class="tags"><span>JavaScript</span><span>Node.js</span><span>React</span><span>Next.js</span><span>Python</span><span>SQL</span></div>
+      </div>
+      <div class="skill-cat">
+        <h4 class="lang-en">Software &amp; Analysis</h4><h4 class="lang-es">Software y Análisis</h4>
+        <div class="tags"><span>Data Analysis</span><span>Process Optimization</span><span>Digital Transformation</span><span>UI</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr style="margin:0">
+
+<section>
+  <div class="container">
+    <div class="section-label">04</div>
+    <h2 class="section-title lang-en">Contact</h2>
+    <h2 class="section-title lang-es">Contacto</h2>
+
+    <div class="contact">
+      <a href="mailto:torres.castro.alex@gmail.com"><span class="label">Email</span> torres.castro.alex@gmail.com</a>
+      <a href="tel:+573054184380"><span class="label">Phone</span> +57 305 418 4380</a>
+      <span class="plain"><span class="label" style="color:var(--accent);font-weight:500;margin-right:0.15rem">Location</span> Cali, Colombia</span>
+    </div>
+  </div>
+</section>
+
+<footer>Jhonn Torres — Web3 Developer · Cali, Colombia</footer>
+
+<script>
+document.querySelectorAll('.lang-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.lang-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.documentElement.dataset.lang = b.dataset.lang;
+  });
+});
+
+// Terminal typing effect
+const nameHTML = 'Jhonn <strong>Torres</strong>';
+const chars = nameHTML.split('');
+const term = document.getElementById('terminal-name');
+let idx = 0;
+function typeChar(){
+  if(idx >= chars.length) return;
+  const typed = chars.slice(0, idx + 1).join('');
+  let html = typed;
+  // Rebuild markup progressively: escape partial <strong>
+  const full = nameHTML;
+  const partial = typed;
+  html = partial.replace(/<strong>/g, '').replace(/<\/strong>/g, '');
+  // If the typed chunk is a prefix of the full string, render raw text; else final markup
+  if (full.indexOf(partial) === 0) {
+    html = partial.replace(/<[^>]+>/g, '');
+  } else {
+    html = full;
+    idx = full.length - 1;
+  }
+  term.innerHTML = html + '<span class="terminal-cursor"></span>';
+  idx++;
+  setTimeout(typeChar, idx === 1 ? 500 : 45 + Math.random() * 65);
+}
+setTimeout(typeChar, 400);
+
+// Accordion — one open at a time
+document.querySelectorAll('.exp-header').forEach(h => {
+  h.addEventListener('click', () => {
+    const item = h.closest('.exp-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.exp-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+// Hide nav on scroll down after 80px
+let lastY = 0;
+const nav = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > 80 && y > lastY) nav.style.transform = 'translateY(-100%)';
+  else nav.style.transform = 'translateY(0)';
+  lastY = y;
+});
+</script>
+</body>
+</html>
