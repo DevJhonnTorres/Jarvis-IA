@@ -77,9 +77,10 @@ class HermesBot:
 
     async def handle_document(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle document uploads"""
-        document = update.message.document
+        import os
 
-        await update.message.chat.send_action("upload")
+        document = update.message.document
+        await update.message.reply_text("📥 Descargando archivo...")
 
         try:
             # Download file
@@ -96,10 +97,14 @@ class HermesBot:
                 content = content[:5000] + "\n\n[... archivo truncado ...]"
 
             # Send to DeepSeek
-            await update.message.chat.send_action("typing")
+            await update.message.reply_text("🔄 Analizando archivo con DeepSeek...")
             prompt = f"Analiza este archivo:\n\n{content}\n\n¿Qué contiene? ¿Hay algo que instalar o ejecutar?"
 
-            response = await self.query_deepsek(prompt)
+            # Call DeepSeek directly (synchronous)
+            if DEEPSEK_AVAILABLE:
+                response = deepsek_client.query_sync(prompt)
+            else:
+                response = "❌ DeepSeek no disponible"
 
             # Send response
             if len(response) > 4096:
@@ -109,12 +114,13 @@ class HermesBot:
                 await update.message.reply_text(response)
 
             # Cleanup
-            import os
-            os.remove(file_path)
+            if os.path.exists(file_path):
+                os.remove(file_path)
 
         except Exception as e:
-            error_msg = f"❌ Error procesando archivo: {str(e)}"
+            error_msg = f"❌ Error procesando archivo:\n{str(e)}"
             await update.message.reply_text(error_msg)
+            print(f"Error en handle_document: {e}")
 
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Process user messages and send to DeepSeek"""
