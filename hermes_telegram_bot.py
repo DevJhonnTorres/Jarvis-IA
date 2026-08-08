@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
 """
-Hermes Agent Telegram Bot
-Connects Hermes Agent with Telegram for 24/7 communication
-Works on Replit with keep-alive server
+Jarvis Telegram Bot — OBSOLETO.
+
+Reemplazado por el gateway nativo de Hermes (`hermes gateway run`), que es
+como corre Dorsha. El gateway da lo que este script no puede: sesión con
+memoria por chat (acá cada mensaje era un `hermes -z` nuevo, sin contexto
+del anterior), herramientas dentro del chat, envío de archivos con
+MEDIA:/ruta y menú de comandos.
+
+⚠️ NO levantar este script y el gateway a la vez: los dos hacen long polling
+sobre el mismo token y Telegram devuelve 409 (Conflict: terminated by other
+getUpdates request), dejando al bot sin responder.
+
+Se conserva solo como referencia.
 """
 
 import os

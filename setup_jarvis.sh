@@ -118,6 +118,16 @@ else
     printf '\nDEEPSEEK_API_KEY=%s\n' "$DEEPSEEK_API_KEY" >> "$HERMES_HOME/.env"
 fi
 
+# Telegram (opcional): habilita el gateway nativo, como corre Dorsha.
+if [ -n "${TELEGRAM_BOT_TOKEN:-}" ]; then
+    if grep -q '^TELEGRAM_BOT_TOKEN=' "$HERMES_HOME/.env"; then
+        sed -i "s|^TELEGRAM_BOT_TOKEN=.*|TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}|" "$HERMES_HOME/.env"
+    else
+        printf '\nTELEGRAM_BOT_TOKEN=%s\n' "$TELEGRAM_BOT_TOKEN" >> "$HERMES_HOME/.env"
+    fi
+    echo "   Telegram: token cargado"
+fi
+
 # ---------------------------------------------------------------------------
 # Modelo, memoria y personalidad
 # ---------------------------------------------------------------------------
@@ -142,4 +152,7 @@ echo "   Modelo:   deepseek-v4-flash (provider deepseek)"
 echo "   Identidad: ~/.hermes/SOUL.md"
 echo "   Memoria:  ~/.hermes/memories/{MEMORY,USER}.md"
 echo
-echo "Probar:  hermes -z 'Presentate en una frase.'"
+echo "Probar:   hermes -z 'Presentate en una frase.'"
+echo "Telegram: hermes gateway run     (NO levantar hermes_telegram_bot.py"
+echo "                                  al mismo tiempo: 409 Conflict)"
+echo "Autorizar usuario: escribile al bot y luego 'hermes pairing approve <codigo>'"
