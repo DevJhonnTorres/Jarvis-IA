@@ -12,7 +12,7 @@ from typing import Optional
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from keep_alive import keep_alive
-from deepsek_integration import deepsek_client, DEEPSEK_AVAILABLE
+from hermes_local_integration import hermes_client, HERMES_AVAILABLE
 
 
 class HermesBot:
@@ -32,17 +32,17 @@ class HermesBot:
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /start command"""
         welcome_msg = (
-            "🤖 *Hermes + DeepSeek v4 Bot*\n\n"
-            "Bienvenido. Soy tu asistente de IA con DeepSeek v4.\n"
+            "🤖 *Hermes Agent Bot*\n\n"
+            "Bienvenido. Soy Hermes, tu asistente de IA local.\n"
             "Escribe cualquier mensaje y te ayudaré.\n\n"
             "💡 Puedo:\n"
             "• Responder preguntas\n"
-            "• Analizar texto\n"
+            "• Analizar archivos\n"
             "• Ayudarte con código\n"
             "• Y mucho más\n\n"
             "Comandos:\n"
             "/help - Mostrar ayuda\n"
-            "/status - Estado de DeepSeek"
+            "/status - Estado de Hermes"
         )
         await update.message.reply_text(welcome_msg, parse_mode="Markdown")
 
@@ -53,25 +53,25 @@ class HermesBot:
             "Puedes enviar:\n"
             "• 💬 Mensajes de texto\n"
             "• 📄 Archivos (documentos, código, logs)\n\n"
-            "Hermes puede:\n"
+            "Hermes Agent puede:\n"
             "• Responder preguntas\n"
-            "• Analizar archivos\n"
-            "• Leer código\n"
+            "• Analizar archivos localmente\n"
+            "• Leer y procesar código\n"
             "• Procesar documentos\n"
             "• Y mucho más\n\n"
             "Comandos:\n"
             "/start - Iniciar bot\n"
-            "/status - Ver estado\n"
+            "/status - Ver estado de Hermes\n"
             "/help - Esta ayuda"
         )
         await update.message.reply_text(help_msg, parse_mode="Markdown")
 
     async def status(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Check AI service status"""
-        if DEEPSEK_AVAILABLE:
-            status_msg = "✅ DeepSeek v4 API está activo\n\n🤖 Modelo: deepseek-chat\n🔌 Conexión: Establecida"
+        """Check Hermes Agent status"""
+        if HERMES_AVAILABLE:
+            status_msg = "✅ Hermes Agent está activo\n\n🤖 Hermes v0.20.0\n🔌 Local: Listo\n⚙️ Python: 3.11.15"
         else:
-            status_msg = "❌ DeepSeek API no está disponible"
+            status_msg = "❌ Hermes Agent no está disponible"
 
         await update.message.reply_text(status_msg)
 
@@ -96,15 +96,15 @@ class HermesBot:
             if len(content) > 5000:
                 content = content[:5000] + "\n\n[... archivo truncado ...]"
 
-            # Send to DeepSeek
-            await update.message.reply_text("🔄 Analizando archivo con DeepSeek...")
+            # Send to Hermes
+            await update.message.reply_text("🔄 Analizando archivo con Hermes...")
             prompt = f"Analiza este archivo:\n\n{content}\n\n¿Qué contiene? ¿Hay algo que instalar o ejecutar?"
 
-            # Call DeepSeek directly (synchronous)
-            if DEEPSEK_AVAILABLE:
-                response = deepsek_client.query_sync(prompt)
+            # Call Hermes directly (synchronous)
+            if HERMES_AVAILABLE:
+                response = hermes_client.query_sync(prompt)
             else:
-                response = "❌ DeepSeek no disponible"
+                response = "❌ Hermes no disponible"
 
             # Send response
             if len(response) > 4096:
@@ -123,18 +123,18 @@ class HermesBot:
             print(f"Error en handle_document: {e}")
 
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Process user messages and send to DeepSeek"""
+        """Process user messages and send to Hermes"""
         user_message = update.message.text
 
         # Show typing indicator
         await update.message.chat.send_action("typing")
 
         try:
-            if DEEPSEK_AVAILABLE:
-                # Send message to DeepSeek
-                response = await self.query_deepsek(user_message)
+            if HERMES_AVAILABLE:
+                # Send message to Hermes
+                response = await self.query_hermes(user_message)
             else:
-                response = "❌ DeepSeek API no está disponible. Verifica tu API key."
+                response = "❌ Hermes Agent no está disponible. Verifica que Hermes esté instalado."
 
             # Split long messages
             if len(response) > 4096:
@@ -147,14 +147,14 @@ class HermesBot:
             error_msg = f"❌ Error: {str(e)}\n\nIntenta de nuevo o usa /help"
             await update.message.reply_text(error_msg)
 
-    async def query_deepsek(self, message: str) -> str:
-        """Query DeepSeek v4 API"""
+    async def query_hermes(self, message: str) -> str:
+        """Query Hermes Agent locally"""
         try:
-            if not DEEPSEK_AVAILABLE:
-                return "❌ DeepSeek API no está disponible. Verifica tu API key."
+            if not HERMES_AVAILABLE:
+                return "❌ Hermes Agent no está disponible. Verifica que Hermes esté instalado."
 
-            # Use DeepSeek client synchronously
-            response = deepsek_client.query_sync(message)
+            # Use Hermes client synchronously
+            response = hermes_client.query_sync(message)
             return response
 
         except Exception as e:
