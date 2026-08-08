@@ -12,14 +12,7 @@ from typing import Optional
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from keep_alive import keep_alive
-
-# Hermes Agent integration
-try:
-    import subprocess
-    HERMES_AVAILABLE = True
-except ImportError:
-    HERMES_AVAILABLE = False
-    print("Warning: Hermes not found in PATH")
+from deepsek_integration import deepsek_client, DEEPSEK_AVAILABLE
 
 
 class HermesBot:
@@ -38,12 +31,17 @@ class HermesBot:
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /start command"""
         welcome_msg = (
-            "🤖 *Hermes Agent Bot*\n\n"
-            "Bienvenido. Soy Hermes, tu asistente de IA.\n"
+            "🤖 *Hermes + DeepSeek v4 Bot*\n\n"
+            "Bienvenido. Soy tu asistente de IA con DeepSeek v4.\n"
             "Escribe cualquier mensaje y te ayudaré.\n\n"
+            "💡 Puedo:\n"
+            "• Responder preguntas\n"
+            "• Analizar texto\n"
+            "• Ayudarte con código\n"
+            "• Y mucho más\n\n"
             "Comandos:\n"
             "/help - Mostrar ayuda\n"
-            "/status - Estado de Hermes"
+            "/status - Estado de DeepSeek"
         )
         await update.message.reply_text(welcome_msg, parse_mode="Markdown")
 
@@ -65,36 +63,27 @@ class HermesBot:
         await update.message.reply_text(help_msg, parse_mode="Markdown")
 
     async def status(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Check Hermes status"""
-        if HERMES_AVAILABLE:
-            try:
-                result = subprocess.run(
-                    ["hermes", "--version"],
-                    capture_output=True,
-                    text=True,
-                    timeout=5
-                )
-                status_msg = f"✅ Hermes está activo\n\n{result.stdout}"
-            except Exception as e:
-                status_msg = f"⚠️ Error: {str(e)}"
+        """Check AI service status"""
+        if DEEPSEK_AVAILABLE:
+            status_msg = "✅ DeepSeek v4 API está activo\n\n🤖 Modelo: deepseek-chat\n🔌 Conexión: Establecida"
         else:
-            status_msg = "❌ Hermes no está disponible"
+            status_msg = "❌ DeepSeek API no está disponible"
 
         await update.message.reply_text(status_msg)
 
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Process user messages and send to Hermes"""
+        """Process user messages and send to DeepSeek"""
         user_message = update.message.text
 
         # Show typing indicator
         await update.message.chat.send_action("typing")
 
         try:
-            if HERMES_AVAILABLE:
-                # Send message to Hermes (this is a placeholder - actual integration depends on Hermes API)
-                response = await self.query_hermes(user_message)
+            if DEEPSEK_AVAILABLE:
+                # Send message to DeepSeek
+                response = await self.query_deepsek(user_message)
             else:
-                response = "❌ Hermes no está disponible. Por favor instálalo primero: hermes --version"
+                response = "❌ DeepSeek API no está disponible. Verifica tu API key."
 
             # Split long messages
             if len(response) > 4096:
@@ -107,27 +96,18 @@ class HermesBot:
             error_msg = f"❌ Error: {str(e)}\n\nIntenta de nuevo o usa /help"
             await update.message.reply_text(error_msg)
 
-    async def query_hermes(self, message: str) -> str:
-        """Query Hermes Agent (placeholder - needs Hermes API integration)"""
+    async def query_deepsek(self, message: str) -> str:
+        """Query DeepSeek v4 API"""
         try:
-            # This is a placeholder for Hermes integration
-            # You'll need to implement the actual Hermes API call here
-            result = subprocess.run(
-                ["hermes", "chat", message],
-                capture_output=True,
-                text=True,
-                timeout=30
-            )
+            if not DEEPSEK_AVAILABLE:
+                return "❌ DeepSeek API no está disponible. Verifica tu API key."
 
-            if result.returncode == 0:
-                return result.stdout.strip() or "Respuesta vacía de Hermes"
-            else:
-                return f"Error de Hermes: {result.stderr}"
+            # Use DeepSeek client synchronously
+            response = deepsek_client.query_sync(message)
+            return response
 
-        except subprocess.TimeoutExpired:
-            return "⏱️ Hermes tardó demasiado en responder. Intenta con un mensaje más corto."
         except Exception as e:
-            return f"Error al contactar Hermes: {str(e)}"
+            return f"❌ Error: {str(e)}\n\nIntenta de nuevo."
 
     def run(self):
         """Start the bot"""
