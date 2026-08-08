@@ -1,0 +1,11 @@
+{
+  "name": "Hermes Telegram Bot",
+  "description": "24/7 Telegram bot powered by Hermes Agent",
+  "env": [
+    {
+      "name": "TELEGRAM_BOT_TOKEN",
+      "description": "Token de tu bot de Telegram (obtén de @BotFather)",
+      "value": ""
+    }
+  ]
+}
