@@ -128,6 +128,18 @@ if [ -n "${TELEGRAM_BOT_TOKEN:-}" ]; then
     echo "   Telegram: token cargado"
 fi
 
+# Allowlist de Telegram (opcional). Sin esto el gateway deniega a todo el
+# mundo y hay que volver a emparejar a mano tras cada reprovisión.
+# Se toma de la variable de entorno para NO dejar IDs de personas en el repo.
+if [ -n "${TELEGRAM_ALLOWED_USERS:-}" ]; then
+    if grep -q '^TELEGRAM_ALLOWED_USERS=' "$HERMES_HOME/.env"; then
+        sed -i "s|^TELEGRAM_ALLOWED_USERS=.*|TELEGRAM_ALLOWED_USERS=${TELEGRAM_ALLOWED_USERS}|" "$HERMES_HOME/.env"
+    else
+        printf '\nTELEGRAM_ALLOWED_USERS=%s\n' "$TELEGRAM_ALLOWED_USERS" >> "$HERMES_HOME/.env"
+    fi
+    echo "   Telegram: allowlist cargada"
+fi
+
 # ---------------------------------------------------------------------------
 # Modelo, memoria y personalidad
 # ---------------------------------------------------------------------------
