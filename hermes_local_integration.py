@@ -40,12 +40,14 @@ class HermesLocalClient:
             Response from Hermes
         """
         try:
-            # Call Hermes with the message
+            # One-shot prompt: `hermes -z "<mensaje>"`.
+            # `hermes chat` is the INTERACTIVE subcommand and takes no
+            # positional message, so it must not be used here.
             result = subprocess.run(
-                ["hermes", "chat", message],
+                ["hermes", "-z", message],
                 capture_output=True,
                 text=True,
-                timeout=30,
+                timeout=180,
                 env={**os.environ}
             )
 
@@ -54,17 +56,18 @@ class HermesLocalClient:
                 if response:
                     return response
                 else:
-                    return "✅ Hermes procesó el mensaje pero no devolvió texto"
+                    return "✅ Jarvis procesó el mensaje pero no devolvió texto"
             else:
-                error_msg = result.stderr.strip() if result.stderr else "Error desconocido"
-                return f"❌ Error de Hermes: {error_msg}"
+                error_msg = (result.stderr.strip() or result.stdout.strip()
+                             or "Error desconocido")
+                return f"❌ Error de Jarvis: {error_msg}"
 
         except subprocess.TimeoutExpired:
-            return "⏱️ Hermes tardó demasiado en responder. Intenta con un mensaje más corto."
+            return "⏱️ Jarvis tardó demasiado en responder. Intenta con un mensaje más corto."
         except FileNotFoundError:
             return "❌ Hermes no está instalado o no se encuentra en PATH"
         except Exception as e:
-            return f"❌ Error al llamar a Hermes: {str(e)}"
+            return f"❌ Error al llamar a Jarvis: {str(e)}"
 
     async def query(self, message: str) -> str:
         """Async wrapper for query_sync"""

@@ -32,8 +32,8 @@ class HermesBot:
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /start command"""
         welcome_msg = (
-            "🤖 *Hermes Agent Bot*\n\n"
-            "Bienvenido. Soy Hermes, tu asistente de IA local.\n"
+            "🤖 *Jarvis*\n\n"
+            "Bienvenido. Soy Jarvis, el primer agente de Praktil.\n"
             "Escribe cualquier mensaje y te ayudaré.\n\n"
             "💡 Puedo:\n"
             "• Responder preguntas\n"
@@ -42,18 +42,18 @@ class HermesBot:
             "• Y mucho más\n\n"
             "Comandos:\n"
             "/help - Mostrar ayuda\n"
-            "/status - Estado de Hermes"
+            "/status - Estado de Jarvis"
         )
         await update.message.reply_text(welcome_msg, parse_mode="Markdown")
 
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /help command"""
         help_msg = (
-            "📚 *Ayuda - Hermes Agent*\n\n"
+            "📚 *Ayuda - Jarvis*\n\n"
             "Puedes enviar:\n"
             "• 💬 Mensajes de texto\n"
             "• 📄 Archivos (documentos, código, logs)\n\n"
-            "Hermes Agent puede:\n"
+            "Jarvis puede:\n"
             "• Responder preguntas\n"
             "• Analizar archivos localmente\n"
             "• Leer y procesar código\n"
@@ -61,7 +61,7 @@ class HermesBot:
             "• Y mucho más\n\n"
             "Comandos:\n"
             "/start - Iniciar bot\n"
-            "/status - Ver estado de Hermes\n"
+            "/status - Ver estado de Jarvis\n"
             "/help - Esta ayuda"
         )
         await update.message.reply_text(help_msg, parse_mode="Markdown")
@@ -69,9 +69,15 @@ class HermesBot:
     async def status(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Check Hermes Agent status"""
         if HERMES_AVAILABLE:
-            status_msg = "✅ Hermes Agent está activo\n\n🤖 Hermes v0.20.0\n🔌 Local: Listo\n⚙️ Python: 3.11.15"
+            status_msg = (
+                "✅ Jarvis está activo\n\n"
+                "🤖 Agente: Jarvis (Praktil)\n"
+                "⚙️ Motor: Hermes v0.20.0\n"
+                "🧠 Modelo: deepseek-chat\n"
+                "🔌 Local: Listo"
+            )
         else:
-            status_msg = "❌ Hermes Agent no está disponible"
+            status_msg = "❌ Jarvis no está disponible"
 
         await update.message.reply_text(status_msg)
 
@@ -97,7 +103,7 @@ class HermesBot:
                 content = content[:5000] + "\n\n[... archivo truncado ...]"
 
             # Send to Hermes
-            await update.message.reply_text("🔄 Analizando archivo con Hermes...")
+            await update.message.reply_text("🔄 Analizando archivo con Jarvis...")
             prompt = f"Analiza este archivo:\n\n{content}\n\n¿Qué contiene? ¿Hay algo que instalar o ejecutar?"
 
             # Call Hermes directly (synchronous)
@@ -162,7 +168,7 @@ class HermesBot:
 
     def run(self):
         """Start the bot"""
-        print("🚀 Iniciando Hermes Telegram Bot...")
+        print("🚀 Iniciando Jarvis (Praktil) en Telegram...")
         self.app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
@@ -179,7 +185,7 @@ def main():
         print("  export TELEGRAM_BOT_TOKEN='tu_token_aqui'")
         sys.exit(1)
 
-    print("🚀 Iniciando Hermes Telegram Bot...")
+    print("🚀 Iniciando Jarvis (Praktil) en Telegram...")
     bot = HermesBot(token)
     bot.run()
 
