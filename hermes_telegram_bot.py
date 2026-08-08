@@ -27,6 +27,7 @@ class HermesBot:
         self.app.add_handler(CommandHandler("help", self.help_command))
         self.app.add_handler(CommandHandler("status", self.status))
         self.app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.handle_message))
+        self.app.add_handler(MessageHandler(filters.Document.ALL, self.handle_document))
 
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /start command"""
@@ -49,13 +50,16 @@ class HermesBot:
         """Handle /help command"""
         help_msg = (
             "📚 *Ayuda - Hermes Agent*\n\n"
-            "Puedes enviar cualquier mensaje y Hermes responderá.\n"
+            "Puedes enviar:\n"
+            "• 💬 Mensajes de texto\n"
+            "• 📄 Archivos (documentos, código, logs)\n\n"
             "Hermes puede:\n"
             "• Responder preguntas\n"
-            "• Analizar texto\n"
-            "• Buscar información\n"
+            "• Analizar archivos\n"
+            "• Leer código\n"
+            "• Procesar documentos\n"
             "• Y mucho más\n\n"
-            "Comandos disponibles:\n"
+            "Comandos:\n"
             "/start - Iniciar bot\n"
             "/status - Ver estado\n"
             "/help - Esta ayuda"
@@ -70,6 +74,47 @@ class HermesBot:
             status_msg = "❌ DeepSeek API no está disponible"
 
         await update.message.reply_text(status_msg)
+
+    async def handle_document(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle document uploads"""
+        document = update.message.document
+
+        await update.message.chat.send_action("upload")
+
+        try:
+            # Download file
+            file = await context.bot.get_file(document.file_id)
+            file_path = f"/tmp/{document.file_name}"
+            await file.download_to_drive(file_path)
+
+            # Read file content
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+
+            # Truncate if too long
+            if len(content) > 5000:
+                content = content[:5000] + "\n\n[... archivo truncado ...]"
+
+            # Send to DeepSeek
+            await update.message.chat.send_action("typing")
+            prompt = f"Analiza este archivo:\n\n{content}\n\n¿Qué contiene? ¿Hay algo que instalar o ejecutar?"
+
+            response = await self.query_deepsek(prompt)
+
+            # Send response
+            if len(response) > 4096:
+                for i in range(0, len(response), 4096):
+                    await update.message.reply_text(response[i:i+4096])
+            else:
+                await update.message.reply_text(response)
+
+            # Cleanup
+            import os
+            os.remove(file_path)
+
+        except Exception as e:
+            error_msg = f"❌ Error procesando archivo: {str(e)}"
+            await update.message.reply_text(error_msg)
 
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Process user messages and send to DeepSeek"""
