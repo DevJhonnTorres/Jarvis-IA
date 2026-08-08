@@ -20,7 +20,7 @@ class DeepSeekClient:
             api_key=self.api_key,
             base_url="https://api.deepseek.com"
         )
-        self.model = "deepseek-chat"
+        self.model = "deepseek-v4-flash"
 
     async def query(self, message: str, system_prompt: Optional[str] = None) -> str:
         """

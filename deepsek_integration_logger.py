@@ -22,7 +22,7 @@ class DeepSeekClientWithLogging:
             api_key=self.api_key,
             base_url="https://api.deepseek.com"
         )
-        self.model = "deepseek-chat"
+        self.model = "deepseek-v4-flash"
         self.log_file = log_file
         self.call_count = 0
         self.total_tokens = 0
