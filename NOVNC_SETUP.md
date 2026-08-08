@@ -7,7 +7,7 @@ Accede a tu Hermes Bot + DeepSeek desde cualquier navegador web, sin instalar so
 ### Opción 1: Usando el script automático
 
 ```bash
-cd ~/jhonn-portfolio
+cd ~/Jarvis-IA
 ./start_vnc_novnc.sh
 ```
 

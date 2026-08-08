@@ -24,7 +24,7 @@ git push origin main  # o tu branch
 
 1. Click en **"New Project"** (botón azul arriba a la derecha)
 2. Selecciona **"Deploy from GitHub repo"**
-3. Busca y selecciona: `jhonn-portfolio`
+3. Busca y selecciona: `Jarvis-IA`
 4. Confirma
 
 ## Paso 4: Configurar Variables

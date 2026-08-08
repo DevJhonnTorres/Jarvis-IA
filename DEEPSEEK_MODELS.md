@@ -212,7 +212,7 @@ python3 hermes_telegram_bot.py
 
 ### 3. Monitorea el consumo
 ```bash
-tail -f ~/jhonn-portfolio/deepsek_usage.log
+tail -f ~/Jarvis-IA/deepsek_usage.log
 # Verás menos tokens consumidos
 ```
 

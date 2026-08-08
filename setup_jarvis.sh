@@ -83,15 +83,15 @@ El provider `custom` devuelve 401 contra DeepSeek aunque la credencial sea váli
 §
 Invocación one-shot: `hermes -z "<mensaje>"`. `hermes chat` es el subcomando interactivo y NO acepta mensaje posicional.
 §
-Bot de Telegram en el repo jhonn-portfolio: hermes_telegram_bot.py (handlers) + hermes_local_integration.py (subprocess a `hermes -z`). keep_alive.py levanta Flask en 8080 para 24/7.
+Bot de Telegram en el repo Jarvis-IA: hermes_telegram_bot.py (handlers) + hermes_local_integration.py (subprocess a `hermes -z`). keep_alive.py levanta Flask en 8080 para 24/7.
 §
-~/.hermes/ es efímero en contenedores/Codespaces: setup_jarvis.sh (en jhonn-portfolio) reprovisiona SOUL.md, credencial, modelo y personalidad.
+~/.hermes/ es efímero en contenedores/Codespaces: setup_jarvis.sh (en Jarvis-IA) reprovisiona SOUL.md, credencial, modelo y personalidad.
 §
 Regla de oro del entorno: configuración → config.yaml; secretos → .env, nunca en git ni en el chat.
 MEM
 
 cat > "$HERMES_HOME/memories/USER.md" <<'USR'
-Jhonn Torres: desarrollador Web3, 18 años, Cali (Colombia). Dueño de LaraNails (laranails-chi.vercel.app) y del portafolio jhonn-portfolio.
+Jhonn Torres: desarrollador Web3, 18 años, Cali (Colombia). Dueño de LaraNails (laranails-chi.vercel.app) y del portafolio jhonn-torres-portfolio.
 §
 Prefiere respuestas MUY concisas — un solo parrafito. Tablas cuando hay datos.
 §

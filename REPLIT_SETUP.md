@@ -21,7 +21,7 @@ Click **"Sign up"** (o login si ya tienes cuenta)
 
 1. Click **"+ Create"**
 2. Click **"Import from GitHub"**
-3. Pega: `https://github.com/tu_usuario/jhonn-portfolio`
+3. Pega: `https://github.com/tu_usuario/Jarvis-IA`
    - (Reemplaza `tu_usuario` con tu usuario de GitHub)
 4. Click **"Import"**
 5. Espera a que termine de cargar (1-2 minutos)

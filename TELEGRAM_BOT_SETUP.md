@@ -20,7 +20,7 @@ Bot de Telegram que ejecuta Hermes Agent de forma continua sin intervención man
 3. **Crear nuevo proyecto:**
    - Click en "New Project"
    - Selecciona "Deploy from GitHub repo"
-   - Conecta tu repo `jhonn-portfolio`
+   - Conecta tu repo `Jarvis-IA`
 
 4. **Configurar variables:**
    - En Railway, ve a "Variables"
@@ -88,7 +88,7 @@ Para usuarios que quieren codificar online.
 1. **Ir a https://replit.com**
 2. **Importar repositorio:**
    - Click "Import from GitHub"
-   - Pega: `https://github.com/tu_usuario/jhonn-portfolio`
+   - Pega: `https://github.com/tu_usuario/Jarvis-IA`
 
 3. **Configurar Secretos:**
    - Click 🔒 "Secrets"
@@ -134,7 +134,7 @@ After=network.target
 
 [Service]
 User=tu_usuario
-WorkingDirectory=/path/to/jhonn-portfolio
+WorkingDirectory=/path/to/Jarvis-IA
 Environment="TELEGRAM_BOT_TOKEN=tu_token"
 ExecStart=/usr/bin/python3 hermes_telegram_bot.py
 Restart=always
