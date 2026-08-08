@@ -2,6 +2,7 @@
 """
 Hermes Agent Telegram Bot
 Connects Hermes Agent with Telegram for 24/7 communication
+Works on Replit with keep-alive server
 """
 
 import os
@@ -10,6 +11,7 @@ import asyncio
 from typing import Optional
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from keep_alive import keep_alive
 
 # Hermes Agent integration
 try:
@@ -135,6 +137,9 @@ class HermesBot:
 
 def main():
     """Main entry point"""
+    # Iniciar keep-alive server para Replit (mantiene el bot activo 24/7)
+    keep_alive()
+
     token = os.getenv("TELEGRAM_BOT_TOKEN")
 
     if not token:
@@ -143,6 +148,7 @@ def main():
         print("  export TELEGRAM_BOT_TOKEN='tu_token_aqui'")
         sys.exit(1)
 
+    print("🚀 Iniciando Hermes Telegram Bot...")
     bot = HermesBot(token)
     bot.run()
 

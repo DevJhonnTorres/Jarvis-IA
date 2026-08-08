@@ -1,0 +1,8 @@
+run = "python hermes_telegram_bot.py"
+modules = ["python-3.11"]
+
+[nix]
+channel = "stable-23_05"
+
+[deployment]
+run = ["python", "hermes_telegram_bot.py"]
