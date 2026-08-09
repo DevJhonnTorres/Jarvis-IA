@@ -34,8 +34,12 @@ sudo apt-get install -y -qq git curl python3 ca-certificates
 
 # La e2-micro trae 1 GB de RAM. El gateway usa ~145 MB, así que alcanza, pero
 # sin swap cualquier pico (una skill pesada, un build) mata el proceso por OOM.
-echo "▸ 2/6  Swap de 2 GB (la e2-micro tiene solo 1 GB de RAM)"
-if [ ! -f /swapfile ]; then
+# En un PC normal esto sobra, así que solo se crea si hay menos de 2 GB.
+RAM_MB=$(free -m | awk '/^Mem:/{print $2}')
+echo "▸ 2/6  Swap (RAM detectada: ${RAM_MB} MB)"
+if [ "$RAM_MB" -ge 2000 ]; then
+    echo "   RAM suficiente, no hace falta swap"
+elif [ ! -f /swapfile ]; then
     sudo fallocate -l 2G /swapfile
     sudo chmod 600 /swapfile
     sudo mkswap /swapfile >/dev/null
