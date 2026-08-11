@@ -39,9 +39,22 @@ powercfg /change hibernate-timeout-dc 0
 # un portatil que hace de servidor. 0 = no hacer nada, en AC y en bateria.
 $subBotones = "4f971e89-eebd-4455-a8de-9e59040e7347"
 $accionTapa = "5ca83367-6e45-459f-a27b-476b1d01c936"
+# Windows oculta este ajuste: sin quitarle el atributo, `powercfg /q` no
+# devuelve nada y no hay forma de comprobar que quedo aplicado.
+powercfg -attributes $subBotones $accionTapa -ATTRIB_HIDE
 powercfg /setacvalueindex SCHEME_CURRENT $subBotones $accionTapa 0
 powercfg /setdcvalueindex SCHEME_CURRENT $subBotones $accionTapa 0
 powercfg /setactive SCHEME_CURRENT
+
+# Comprobar de verdad, no asumir. Los dos ultimos valores hexadecimales de la
+# consulta son el indice en corriente alterna y en bateria; 0 = no hacer nada.
+$q = powercfg /q SCHEME_CURRENT $subBotones $accionTapa
+$hex = ([regex]::Matches(($q -join "`n"), '0x[0-9a-fA-F]{8}')).Value
+if ($hex.Count -ge 2 -and $hex[-1] -eq '0x00000000' -and $hex[-2] -eq '0x00000000') {
+    Write-Host "   cerrar la tapa: no hacer nada (con cargador y en bateria)"
+} else {
+    Write-Host "   [!] La accion de tapa NO quedo aplicada: $($hex -join ', ')" -ForegroundColor Yellow
+}
 
 Write-Host "   suspension e hibernacion desactivadas (enchufado y en bateria)"
 Write-Host "   cerrar la tapa: no hacer nada"
