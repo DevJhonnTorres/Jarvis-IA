@@ -1,4 +1,4 @@
-# Deja el PC listo para tener a Jarvis prendido 24/7.
+﻿# Deja el PC listo para tener a Jarvis prendido 24/7.
 #
 # Correr DESPUES de:
 #   iex (irm https://hermes-agent.nousresearch.com/install.ps1)

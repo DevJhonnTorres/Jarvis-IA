@@ -1,4 +1,4 @@
-# Provisiona a Jarvis (Praktil) sobre Hermes Agent en Windows.
+﻿# Provisiona a Jarvis (Praktil) sobre Hermes Agent en Windows.
 # Equivalente de setup_jarvis.sh, que es bash y no corre nativo en Windows.
 #
 # Uso (PowerShell):
@@ -12,12 +12,37 @@
 
 $ErrorActionPreference = "Stop"
 
-$HermesHome = if ($env:HERMES_HOME) { $env:HERMES_HOME } else { Join-Path $env:USERPROFILE ".hermes" }
+# En Windows el home de Hermes es %LOCALAPPDATA%\hermes, NO %USERPROFILE%\.hermes
+# (que es lo que usa en Linux). Verificado en una instalacion real: ahi viven
+# config.yaml, .env, SOUL.md y memories\. Escribir en la ruta de Linux crea
+# archivos que Hermes nunca lee, y el script "funciona" sin hacer nada.
+if ($env:HERMES_HOME) {
+    $HermesHome = $env:HERMES_HOME
+} elseif (Test-Path (Join-Path $env:LOCALAPPDATA "hermes\config.yaml")) {
+    $HermesHome = Join-Path $env:LOCALAPPDATA "hermes"
+} elseif (Test-Path (Join-Path $env:USERPROFILE ".hermes\config.yaml")) {
+    $HermesHome = Join-Path $env:USERPROFILE ".hermes"
+} else {
+    $HermesHome = Join-Path $env:LOCALAPPDATA "hermes"
+}
+Write-Host "    Home de Hermes: $HermesHome"
 
 # --- Comprobaciones -------------------------------------------------------
-if (-not (Get-Command hermes -ErrorAction SilentlyContinue)) {
+# El instalador agrega Hermes al PATH de USUARIO, pero una consola ya abierta
+# antes de instalar no lo ve. Buscamos el ejecutable antes de rendirnos.
+$HermesExe = (Get-Command hermes -ErrorAction SilentlyContinue).Source
+if (-not $HermesExe) {
+    $guess = Join-Path $env:LOCALAPPDATA "hermes\hermes-agent\venv\Scripts\hermes.exe"
+    if (Test-Path $guess) {
+        $HermesExe = $guess
+        $env:Path = (Split-Path $guess) + ";" + $env:Path
+        Write-Host "    Hermes no estaba en el PATH de esta consola; usando $guess"
+    }
+}
+if (-not $HermesExe) {
     Write-Host "[X] Hermes no esta instalado o no esta en PATH" -ForegroundColor Red
     Write-Host "    Instalalo con:  iex (irm https://hermes-agent.nousresearch.com/install.ps1)"
+    Write-Host "    Si ya lo instalaste, cerra y volve a abrir PowerShell."
     exit 1
 }
 
@@ -83,7 +108,11 @@ Write-Utf8 (Join-Path $HermesHome "SOUL.md") $Soul
 # Entradas separadas por "`n§`n" (formato de MemoryStore).
 # Limites: MEMORY.md 2200 chars, USER.md 1375 chars.
 $Memory = @'
-Jarvis corre sobre Hermes Agent (motor local); su identidad de Praktil está en ~/.hermes/SOUL.md.
+Jarvis corre sobre Hermes Agent (motor local); su identidad de Praktil está en el SOUL.md del home de Hermes.
+§
+En Windows el home de Hermes es %LOCALAPPDATA%\hermes, NO %USERPROFILE%\.hermes. Ahí viven config.yaml, .env, SOUL.md y memories.
+§
+Los .ps1 con acentos necesitan BOM UTF-8: Windows PowerShell 5.1 parsea sin BOM como Windows-1252 y corrompe los literales del script.
 §
 Modelo: deepseek-v4-flash con el provider nativo `deepseek`. La cuenta solo expone deepseek-v4-flash y deepseek-v4-pro; `deepseek-chat` ya no existe y devuelve error.
 §
@@ -140,12 +169,13 @@ Set-EnvLine "TELEGRAM_ALLOWED_USERS" $env:TELEGRAM_ALLOWED_USERS
 # --- Modelo, memoria y personalidad --------------------------------------
 # Modelos disponibles en la cuenta: deepseek-v4-flash y deepseek-v4-pro.
 # OJO: "deepseek-chat" ya no existe y devuelve error.
-hermes config set model.provider deepseek
-hermes config set model.default "deepseek-v4-flash"
-hermes config set model.base_url "https://api.deepseek.com/v1"
-hermes config set memory.memory_enabled true
-hermes config set memory.user_profile_enabled true
-hermes config set display.personality jarvis
+& $HermesExe config set model.provider deepseek
+& $HermesExe config set model.default "deepseek-v4-flash"
+& $HermesExe config set model.base_url "https://api.deepseek.com/v1"
+& $HermesExe config set memory.memory_enabled true
+& $HermesExe config set memory.user_profile_enabled true
+& $HermesExe config set agent.personalities.jarvis "Sos Jarvis, el primer agente de Praktil (Corporacion - Centro Colombiano de Tecnologias Digitales Convergentes Praktil, Centro de Desarrollo). Naciste el 9 de julio de 2026. Respondes siempre en espanol, salvo que te pidan explicitamente otro idioma." --force
+& $HermesExe config set display.personality jarvis
 
 Write-Host ""
 Write-Host "[OK] Jarvis configurado" -ForegroundColor Green
