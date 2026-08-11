@@ -62,11 +62,11 @@ $carga = [int]$bat.EstimatedChargeRemaining
 $enchufado = ($bat.BatteryStatus -ne 1)
 
 # --- Estado previo, para no repetir la misma alerta cada 5 minutos ---------
-$estado = @{ ultimoEnchufado = $null; avisoDado = $false; criticoDado = $false }
+$estado = @{ ultimoEnchufado = $null; avisoDado = $false; criticoDado = $false; llenoDado = $false }
 if (Test-Path $StateFile) {
     try {
         $prev = Get-Content $StateFile -Raw -Encoding UTF8 | ConvertFrom-Json
-        foreach ($k in @('ultimoEnchufado','avisoDado','criticoDado')) {
+        foreach ($k in @('ultimoEnchufado','avisoDado','criticoDado','llenoDado')) {
             if ($null -ne $prev.$k) { $estado[$k] = $prev.$k }
         }
     } catch { }
@@ -93,6 +93,20 @@ if ($null -ne $estado.ultimoEnchufado -and $estado.ultimoEnchufado -ne $enchufad
     }
 }
 
+if ($enchufado) {
+    # Carga completa: avisar para poder desconectar. Dejar el portatil clavado
+    # en 100% enchufado es lo que mas envejece la bateria, y este modelo no
+    # tiene limitador de carga en la BIOS (lo verificamos: la 14-cf de consumo
+    # no trae Battery Health Manager), asi que el corte es manual.
+    #
+    # El umbral es 99 y no 100 a proposito: muchos portatiles se quedan en 99%
+    # un buen rato antes de marcar 100, y algunos no lo marcan nunca.
+    if ($carga -ge 99 -and -not $estado.llenoDado) {
+        $mensajes += "✅ *Bateria al $carga%*`n`nYa podes desconectar el cargador.`nDejarlo enchufado al 100% todo el dia desgasta la bateria."
+        $estado.llenoDado = $true
+    }
+}
+
 if (-not $enchufado) {
     if ($carga -le $UMBRAL_CRITICO -and -not $estado.criticoDado) {
         $mensajes += "🚨 *BATERIA CRITICA: $carga%*`n`nConecta el cargador YA.`nCuando se apague, Jarvis no vuelve solo."
@@ -109,6 +123,9 @@ if (-not $enchufado) {
 # no oscile enviando alertas si la carga queda justo en el umbral.
 if ($enchufado -or $carga -gt ($UMBRAL_AVISO + 5)) { $estado.avisoDado = $false }
 if ($enchufado -or $carga -gt ($UMBRAL_CRITICO + 5)) { $estado.criticoDado = $false }
+# El aviso de carga completa se rearma al desenchufar o al bajar de 95, para
+# que no vuelva a sonar si la carga oscila entre 99 y 100 estando conectado.
+if (-not $enchufado -or $carga -lt 95) { $estado.llenoDado = $false }
 
 $estado.ultimoEnchufado = $enchufado
 

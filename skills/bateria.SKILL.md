@@ -1,5 +1,5 @@
 ---
-name: bateria-jarvis
+name: bateria
 description: Estado de la bateria del equipo que hospeda a Jarvis (carga, si esta enchufado, autonomia). Usar cuando pregunten por bateria, cargador, energia o cuanto aguanta el equipo.
 version: 1.0.0
 author: jhonn
