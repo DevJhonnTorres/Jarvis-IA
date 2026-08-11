@@ -80,17 +80,55 @@ hermes gateway status
 
 Y la prueba que vale: escribile al bot por Telegram.
 
+## 4. Dejarlo prendido 24/7
+
+```powershell
+# PowerShell COMO ADMINISTRADOR
+.\windows_always_on.ps1
+```
+
+Desactiva suspensión e hibernación, revisa la tarea del gateway y te dice si
+falta el inicio de sesión automático.
+
+### Qué política de reinicio quedó
+
+La tarea que registra Hermes trae esto:
+
+```xml
+<RestartOnFailure><Interval>PT1M</Interval><Count>999</Count></RestartOnFailure>
+<MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+<ExecutionTimeLimit>PT0S</ExecutionTimeLimit>
+<StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+```
+
+- **999 reintentos, uno por minuto** — el supervisor que faltaba
+- **`IgnoreNew`** — no puede arrancar un segundo gateway, así que el 409 por
+  doble poller queda bloqueado de fábrica
+- **Sin límite de ejecución** — no lo mata a las N horas
+- **No se detiene con batería**
+
 ## Lo que hay que saber
 
-**Arranca al iniciar sesión, no al prender.** `schtasks /SC ONLOGON` significa
-que Jarvis levanta cuando **vos iniciás sesión en Windows**, no cuando la
-máquina prende. Si reiniciás y dejás la pantalla de login sin entrar, Jarvis no
-arranca. Para que sobreviva reinicios solo, configurá inicio de sesión
-automático en Windows.
+**Arranca al iniciar sesión, no al prender.** El disparador es `LogonTrigger`
+con `InteractiveToken`: Jarvis levanta cuando **vos iniciás sesión**, no cuando
+la máquina prende. Si Windows se reinicia solo de madrugada por una
+actualización y queda en la pantalla de login, Jarvis no arranca hasta que
+alguien entre.
 
-**Suspensión.** Si el PC se suspende, Jarvis se suspende con él. En Configuración
-→ Sistema → Inicio/apagado, poné suspensión en *Nunca*. Si es un portátil,
-dejalo enchufado y revisá el comportamiento al cerrar la tapa.
+Dos formas de taparlo:
+
+| Opción | Cómo | Contra |
+|---|---|---|
+| Inicio de sesión automático | `netplwiz` → destildar la casilla | Quien prenda el PC entra a tu sesión |
+| Tarea sin sesión | Programador de tareas → *"Ejecutar tanto si el usuario inició sesión como si no"* | Guarda tu contraseña; corre sin escritorio |
+
+**Suspensión.** Si el PC se suspende, Jarvis se suspende con él. Lo resuelve
+`windows_always_on.ps1`. La pantalla sí puede apagarse — eso no suspende el
+equipo.
+
+**Placa de red.** Administrador de dispositivos → tu adaptador → Administración
+de energía → destildar *"Permitir que el equipo apague este dispositivo"*. Sin
+eso Windows puede apagarte la red y Jarvis se queda sin Telegram.
 
 **Apagá el gateway del contenedor** cuando el PC esté andando. Dos pollers sobre
 el mismo token = 409 Conflict y el bot deja de responder:
