@@ -177,6 +177,38 @@ Set-EnvLine "TELEGRAM_ALLOWED_USERS" $env:TELEGRAM_ALLOWED_USERS
 & $HermesExe config set agent.personalities.jarvis "Sos Jarvis, el primer agente de Praktil (Corporacion - Centro Colombiano de Tecnologias Digitales Convergentes Praktil, Centro de Desarrollo). Naciste el 9 de julio de 2026. Respondes siempre en espanol, salvo que te pidan explicitamente otro idioma." --force
 & $HermesExe config set display.personality jarvis
 
+# --- Control de costo ------------------------------------------------------
+# Medido con `hermes prompt-size`: cada llamada al modelo arrastra ~22 KB de
+# system prompt MAS los esquemas de las herramientas. Con max_turns en 500, un
+# solo mensaje de Telegram podia encadenar hasta 500 llamadas de ese tamano.
+# Eso es lo que vaciaba los creditos.
+& $HermesExe config set agent.max_turns 20              # 500 -> 20
+& $HermesExe config set agent.reasoning_effort low      # DeepSeek cobra el razonamiento
+& $HermesExe config set compression.threshold 0.35      # comprimir antes = prompts mas chicos
+& $HermesExe config set session_reset.mode idle         # el contexto dejaba de crecer nunca
+& $HermesExe config set session_reset.idle_minutes 240
+
+# Toolsets de Telegram: lista explicita en vez del preset hermes-telegram.
+# `hermes config set` no maneja listas YAML, asi que se edita con el Python
+# que trae Hermes. Recorta los esquemas de 43,8 KB a 23,2 KB por llamada.
+$pyExe = Join-Path (Split-Path (Split-Path $HermesExe)) "python.exe"
+if (-not (Test-Path $pyExe)) { $pyExe = Join-Path (Split-Path $HermesExe) "python.exe" }
+$cfgPath = Join-Path $HermesHome "config.yaml"
+$pyCode = @"
+import yaml, io
+p = r'$cfgPath'
+with io.open(p, encoding='utf-8') as f:
+    c = yaml.safe_load(f) or {}
+c.setdefault('platform_toolsets', {})['telegram'] = [
+    'terminal', 'file', 'web', 'skills', 'todo',
+    'memory', 'vision', 'image_gen', 'tts', 'cronjob',
+]
+with io.open(p, 'w', encoding='utf-8') as f:
+    yaml.safe_dump(c, f, allow_unicode=True, sort_keys=False)
+print('   toolsets de Telegram recortados (fuera: browser, session_search, delegation)')
+"@
+& $pyExe -c $pyCode
+
 Write-Host ""
 Write-Host "[OK] Jarvis configurado" -ForegroundColor Green
 Write-Host "     Modelo:    deepseek-v4-flash (provider deepseek)"
