@@ -28,7 +28,23 @@ powercfg /change standby-timeout-ac 0      # nunca suspender (enchufado)
 powercfg /change hibernate-timeout-ac 0    # nunca hibernar
 powercfg /change disk-timeout-ac 0         # no apagar discos
 powercfg /hibernate off                    # libera hiberfil.sys
-Write-Host "   suspension e hibernacion desactivadas (enchufado)"
+
+# Tambien en bateria: venia con 10 minutos, y un equipo suspendido corta
+# AnyDesk y congela a Jarvis. Durante un corte de luz preferimos seguir
+# accesibles y que las alertas de bateria avisen, antes que desaparecer.
+powercfg /change standby-timeout-dc 0
+powercfg /change hibernate-timeout-dc 0
+
+# Cerrar la tapa NO debe suspender: es la forma mas comun de matar sin querer
+# un portatil que hace de servidor. 0 = no hacer nada, en AC y en bateria.
+$subBotones = "4f971e89-eebd-4455-a8de-9e59040e7347"
+$accionTapa = "5ca83367-6e45-459f-a27b-476b1d01c936"
+powercfg /setacvalueindex SCHEME_CURRENT $subBotones $accionTapa 0
+powercfg /setdcvalueindex SCHEME_CURRENT $subBotones $accionTapa 0
+powercfg /setactive SCHEME_CURRENT
+
+Write-Host "   suspension e hibernacion desactivadas (enchufado y en bateria)"
+Write-Host "   cerrar la tapa: no hacer nada"
 Write-Host "   la pantalla puede seguir apagandose, no afecta"
 
 Write-Host ""
